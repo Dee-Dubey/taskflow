@@ -1,0 +1,87 @@
+<div class="modal-header border-0 pb-0">
+  <h5 class="modal-title fw-bold">{{ isEditMode ? 'Edit Task' : 'Add Task' }}</h5>
+  <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  @if (errorMessage()) {
+    <div class="alert alert-danger py-2 small">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="mb-3">
+      <label class="form-label small fw-semibold">Title</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Task title"
+        formControlName="title"
+        [class.is-invalid]="form.controls.title.invalid && form.controls.title.touched"
+      />
+      @if (form.controls.title.hasError('required') && form.controls.title.touched) {
+        <div class="invalid-feedback">Title is required.</div>
+      }
+      @if (form.controls.title.hasError('maxlength') && form.controls.title.touched) {
+        <div class="invalid-feedback">Title must be under 150 characters.</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label small fw-semibold">Description</label>
+      <textarea
+        class="form-control"
+        rows="3"
+        placeholder="Add more detail (optional)"
+        formControlName="description"
+        [class.is-invalid]="form.controls.description.invalid && form.controls.description.touched"
+      ></textarea>
+      @if (form.controls.description.hasError('maxlength')) {
+        <div class="invalid-feedback">Description must be under 2000 characters.</div>
+      }
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-sm-6">
+        <label class="form-label small fw-semibold">Status</label>
+        <select class="form-select" formControlName="status">
+          <option value="pending">Pending</option>
+          <option value="in-progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6">
+        <label class="form-label small fw-semibold">Due date</label>
+        <input type="date" class="form-control" formControlName="dueDate" />
+      </div>
+    </div>
+
+    @if (!isEmployee) {
+      <div class="mb-3">
+        <label class="form-label small fw-semibold">Assign to</label>
+        <select class="form-select" formControlName="assignedTo">
+          <option value="" disabled>{{ loadingUsers() ? 'Loading...' : 'Choose someone' }}</option>
+          @for (u of assignableUsers(); track u._id) {
+            <option [value]="u._id">{{ u.username }}</option>
+          }
+        </select>
+      </div>
+    } @else {
+      <div class="mb-3">
+        <label class="form-label small fw-semibold">Assign to</label>
+        <input type="text" class="form-control" value="Yourself" disabled />
+        <small class="text-muted">Tasks you create are automatically assigned to you.</small>
+      </div>
+    }
+
+    <div class="d-flex gap-2 justify-content-end mt-4">
+      <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          Saving...
+        } @else {
+          {{ isEditMode ? 'Save changes' : 'Create task' }}
+        }
+      </button>
+    </div>
+  </form>
+</div>

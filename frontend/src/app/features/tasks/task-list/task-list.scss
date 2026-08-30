@@ -1,0 +1,19 @@
+.avatar-circle-sm {
+  width: 30px;
+  height: 30px;
+  font-size: 0.7rem;
+}
+
+.filter-select {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .filter-select {
+    width: 160px;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

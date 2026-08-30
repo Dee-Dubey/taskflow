@@ -1,0 +1,115 @@
+<div class="p-4">
+  <h4 class="fw-bold mb-3">All Users</h4>
+
+  <div class="d-flex flex-column flex-sm-row gap-2 mb-4">
+    <input type="text" class="form-control" placeholder="Search by name or email..." [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)" />
+    <select class="form-select filter-select" [ngModel]="roleFilter()" (ngModelChange)="roleFilter.set($event)">
+      <option value="">All Roles</option>
+      <option value="manager">Manager</option>
+      <option value="teamlead">Team Lead</option>
+      <option value="employee">Employee</option>
+    </select>
+  </div>
+
+  @if (errorMessage()) {
+  <div class="alert alert-danger">{{ errorMessage() }}</div>
+  } @else if (isLoading()) {
+  <div class="d-flex justify-content-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+  } @else {
+
+  @if (managers().length > 0) {
+  <div class="mb-4">
+    <h6 class="text-uppercase text-muted small fw-bold mb-2">Managers</h6>
+    <div class="d-flex flex-column gap-2">
+      @for (u of managers(); track u._id) {
+      <div class="card border-0 shadow-sm">
+        <div class="card-body py-3 d-flex align-items-center gap-3 flex-wrap">
+          <div
+            class="avatar-circle d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+            [style.background]="colorFor(u.username)">
+            {{ initialsFor(u.username) }}
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="fw-semibold">{{ u.username }}</span>
+              <app-role-badge [role]="u.role" />
+            </div>
+            <div class="text-muted small">{{ u.email }}</div>
+          </div>
+          <div class="text-end small text-muted">
+            <div class="fw-bold">{{ u.stats.total }}</div>
+            <div class="text-muted small">total tasks</div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  @if (teamLeads().length > 0) {
+  <div class="mb-4">
+    <h6 class="text-uppercase text-muted small fw-bold mb-2">Team Leads</h6>
+    <div class="d-flex flex-column gap-2">
+      @for (u of teamLeads(); track u._id) {
+      <div class="card border-0 shadow-sm">
+        <div class="card-body py-3 d-flex align-items-center gap-3 flex-wrap">
+          <div
+            class="avatar-circle d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+            [style.background]="colorFor(u.username)">
+            {{ initialsFor(u.username) }}
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-2">
+              <span class="fw-semibold">{{ u.username }}</span>
+              <app-role-badge [role]="u.role" />
+            </div>
+            <div class="text-muted small">{{ u.email }}</div>
+          </div>
+          <div class="text-end small text-muted">
+            {{ u.reportsCount }} reports &middot; {{ u.stats.total }} tasks
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  @if (employees().length > 0) {
+  <div class="mb-4">
+    <h6 class="text-uppercase text-muted small fw-bold mb-2">Employees</h6>
+    <div class="d-flex flex-column gap-2">
+      @for (u of employees(); track u._id) {
+      <div class="card border-0 shadow-sm">
+        <div class="card-body py-3 d-flex align-items-center gap-3 flex-wrap">
+          <div
+            class="avatar-circle d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+            [style.background]="colorFor(u.username)">
+            {{ initialsFor(u.username) }}
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-2">
+              <span class="fw-semibold">{{ u.username }}</span>
+              <app-role-badge [role]="u.role" />
+            </div>
+            <div class="text-muted small">{{ u.email }}</div>
+          </div>
+          <div class="text-end small text-muted">
+            {{ u.stats.total }} tasks &middot; {{ u.stats.completed }} done
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  @if (filtered().length === 0) {
+  <p class="text-muted text-center py-4">No users match your filters.</p>
+  }
+  }
+</div>

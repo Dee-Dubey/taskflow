@@ -1,0 +1,160 @@
+<div class="p-4">
+
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <h4 class="fw-bold mb-0">My Tasks</h4>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row gap-2 mb-3">
+        <div class="position-relative flex-grow-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input type="text" class="form-control ps-5" placeholder="Search tasks..." [ngModel]="searchTerm()"
+                (ngModelChange)="searchTerm.set($event)" />
+        </div>
+        <select class="form-select filter-select" [ngModel]="statusFilter()"
+            (ngModelChange)="statusFilter.set($event)">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+        </select>
+
+        @if (canFilterByAssignee) {
+        <select class="form-select filter-select" [ngModel]="assigneeFilter()"
+            (ngModelChange)="assigneeFilter.set($event)">
+            <option value="">All Assignees</option>
+            @for (u of assignableUsers(); track u._id) {
+            <option [value]="u._id">{{ u.username }}</option>
+            }
+        </select>
+        }
+
+        <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center gap-1 text-nowrap"
+            (click)="openAddTask()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Task
+        </button>
+    </div>
+
+    @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+    }
+
+    @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+    } @else if (filteredTasks().length === 0) {
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5 text-muted">
+            No tasks match your filters.
+        </div>
+    </div>
+    } @else {
+
+    <!-- Desktop table -->
+    <div class="card border-0 shadow-sm d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr class="text-muted small text-uppercase">
+                        <th class="ps-3">Task</th>
+                        <th>Assignee</th>
+                        <th>Status</th>
+                        <th>Due Date</th>
+                        <th class="text-end pe-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (task of filteredTasks(); track task._id) {
+                    <tr>
+                        <td class="ps-3 cursor-pointer" (click)="openTaskDetail(task)">
+                            <div class="fw-semibold">{{ task.title }}</div>
+                            <div class="text-muted small text-truncate" style="max-width: min(320px, 40vw);">{{ task.description }}</div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="avatar-circle-sm d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+                                    [style.background]="colorFor(task.assignedTo.username)">
+                                    {{ initialsFor(task.assignedTo.username) }}
+                                </div>
+                                <span class="small">{{ task.assignedTo.username }}</span>
+                            </div>
+                        </td>
+                        <td><app-status-badge [status]="task.status" /></td>
+                        <td class="small text-muted">
+                            @if (task.dueDate) {
+                            {{ task.dueDate | date: 'yyyy-MM-dd' }}
+                            } @else {
+                            —
+                            }
+                        </td>
+                        <td class="text-end pe-3">
+                            <button class="btn btn-sm btn-light me-1" (click)="openEditTask(task)" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z" />
+                                </svg>
+                            </button>
+                            <button class="btn btn-sm btn-light text-danger" (click)="deleteTask(task)" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6" />
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                    <path d="M10 11v6M14 11v6" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="px-3 py-2 text-muted small border-top">
+            Showing {{ filteredTasks().length }} of {{ tasks().length }} tasks
+        </div>
+    </div>
+
+    <!-- Mobile stacked cards -->
+    <div class="d-flex d-md-none flex-column gap-2">
+        @for (task of filteredTasks(); track task._id) {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="fw-semibold mb-0 cursor-pointer" (click)="openTaskDetail(task)">{{ task.title }}</h6>
+                    <app-status-badge [status]="task.status" />
+                </div>
+                <p class="text-muted small mb-2">{{ task.description }}</p>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="avatar-circle-sm d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+                        [style.background]="colorFor(task.assignedTo.username)">
+                        {{ initialsFor(task.assignedTo.username) }}
+                    </div>
+                    <span class="small">{{ task.assignedTo.username }}</span>
+                    @if (task.dueDate) {
+                    <span class="small text-muted ms-auto">{{ task.dueDate | date: 'yyyy-MM-dd' }}</span>
+                    }
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary flex-grow-1"
+                        (click)="openEditTask(task)">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger flex-grow-1" (click)="deleteTask(task)">Delete</button>
+                </div>
+            </div>
+        </div>
+        }
+        <div class="text-muted small text-center py-2">
+            Showing {{ filteredTasks().length }} of {{ tasks().length }} tasks
+        </div>
+    </div>
+    }
+</div>

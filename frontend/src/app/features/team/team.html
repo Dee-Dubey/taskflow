@@ -1,0 +1,65 @@
+<div class="p-4">
+  <h4 class="fw-bold mb-1">Team</h4>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  } @else if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else {
+    <p class="text-muted mb-3">{{ members().length }} team members</p>
+
+    <div class="d-flex flex-column gap-2">
+      @for (member of members(); track member._id) {
+        <div class="card border-0 shadow-sm">
+          <div class="card-body py-3 d-flex align-items-center gap-3 flex-wrap cursor-pointer" (click)="toggleExpand(member)">
+            <div class="avatar-circle d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+                 [style.background]="colorFor(member.username)">
+              {{ initialsFor(member.username) }}
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-flex align-items-center gap-2">
+                <span class="fw-semibold">{{ member.username }}</span>
+                <app-role-badge [role]="member.role" />
+              </div>
+              <div class="text-muted small">{{ member.email }}</div>
+            </div>
+            <div class="d-flex align-items-center gap-3 small text-muted">
+              <span><span class="legend-dot bg-warning"></span>{{ member.stats.pending }}</span>
+              <span><span class="legend-dot bg-info"></span>{{ member.stats.inProgress }}</span>
+              <span><span class="legend-dot bg-success"></span>{{ member.stats.completed }}</span>
+              <span>&middot; {{ member.stats.total }} total</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   [style.transform]="expandedId() === member._id ? 'rotate(90deg)' : 'none'" style="transition: transform 0.15s;">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </div>
+          </div>
+
+          @if (expandedId() === member._id) {
+            <div class="border-top px-3 py-2">
+              @if (loadingTasks()) {
+                <div class="text-muted small py-2">Loading tasks...</div>
+              } @else if (expandedTasks().length === 0) {
+                <div class="text-muted small py-2">No tasks assigned.</div>
+              } @else {
+                @for (task of expandedTasks(); track task._id) {
+                  <div class="d-flex justify-content-between align-items-center py-2 border-bottom small">
+                    <div>
+                      <div class="fw-semibold">{{ task.title }}</div>
+                      @if (task.dueDate) {
+                        <div class="text-muted">Due {{ task.dueDate | date: 'yyyy-MM-dd' }}</div>
+                      }
+                    </div>
+                    <app-status-badge [status]="task.status" />
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

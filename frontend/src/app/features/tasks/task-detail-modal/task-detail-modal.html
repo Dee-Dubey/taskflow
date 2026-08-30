@@ -1,0 +1,46 @@
+@if (task) {
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">Task Details</h5>
+    <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="d-flex align-items-start justify-content-between mb-3">
+      <h5 class="fw-bold mb-0">{{ task.title }}</h5>
+      <app-status-badge [status]="task.status" />
+    </div>
+
+    <p class="text-muted" style="white-space: pre-wrap;">
+      {{ task.description || 'No description provided.' }}
+    </p>
+
+    <hr />
+
+    <div class="row g-3 small">
+      <div class="col-12 col-sm-6">
+        <div class="text-muted text-uppercase" style="font-size: 0.7rem;">Assigned to</div>
+        <div class="d-flex align-items-center gap-2 mt-1">
+          
+          <span class="fw-semibold">{{ task.assignedTo.username }}</span>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="text-muted text-uppercase" style="font-size: 0.7rem;">Created by</div>
+        <div class="fw-semibold mt-1">{{ task.createdBy.username }}</div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="text-muted text-uppercase" style="font-size: 0.7rem;">Due date</div>
+        <div class="fw-semibold mt-1">{{ task.dueDate ? (task.dueDate | date: 'yyyy-MM-dd') : 'Not set' }}</div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="text-muted text-uppercase" style="font-size: 0.7rem;">Last updated</div>
+        <div class="fw-semibold mt-1">{{ task.updatedAt | date: 'yyyy-MM-dd, h:mm a' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">Close</button>
+    <button type="button" class="btn btn-primary" (click)="activeModal.close('edit')">Edit Task</button>
+  </div>
+}

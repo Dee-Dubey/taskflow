@@ -1,0 +1,15 @@
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  font-size: 0.8rem;
+}
+
+.filter-select {
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .filter-select {
+    width: 180px;
+  }
+}

@@ -1,0 +1,44 @@
+.sidebar {
+  width: 240px;
+  transition: transform 0.2s ease;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--bs-primary);
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  font-size: 0.8rem;
+}
+
+.nav-link.active {
+  background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+  color: var(--bs-primary) !important;
+  font-weight: 600;
+}
+
+// Mobile: sidebar off-canvas ban jata hai
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1045;
+    transform: translateX(-100%);
+  }
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1040;
+}
