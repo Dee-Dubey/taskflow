@@ -1,16 +1,19 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
+import { guestGuard } from './core/guards/guest-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+    canActivate: [guestGuard]
   },
   {
     path: 'register',
-    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register)
+    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+    canActivate: [guestGuard]
   },
   {
     path: '',
@@ -37,5 +40,7 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound) },
+  {
+    path: '**', loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound)
+  },
 ];

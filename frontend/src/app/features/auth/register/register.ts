@@ -99,7 +99,7 @@ export class Register {
     this.authService.register(payload).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], { replaceUrl: true });
       },
       error: (error) => {
         this.isSubmitting.set(false);

@@ -42,7 +42,7 @@ export class Login {
       next: ()=> {
         this.isSubmitting.set(false);
         this.socketService.connect()
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard'], { replaceUrl: true });
       },
       error: (error) => {
         this.isSubmitting.set(false)
