@@ -3,9 +3,10 @@ const taskService = require('../services/task.service');
 exports.createTask = async (req, res, next) => {
   try {
     const task = await taskService.createTask(req.user, req.body);
-    req.app.get('io')?.emit('task:create', task)
+    req.app.get('io')?.emit('task:created', task)
     res.status(201).json(task)
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
