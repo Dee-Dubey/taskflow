@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5000/api',
-  sockerUrl: 'http://localhost:5000'
+  apiUrl: 'https://taskflow-backend-gukw.onrender.com/api',
+  sockerUrl: 'https://taskflow-backend-gukw.onrender.com'
 }
