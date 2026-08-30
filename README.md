@@ -4,7 +4,7 @@ A role-based task management application built with MongoDB, Express, Angular, a
 
 ## Live Demo
 
-- **Frontend:** https://taskflow-4k681iz7b-deepak-s-projects-fdcb.vercel.app
+- **Frontend:** https://taskflow-six-rose.vercel.app
 - **Backend API:** https://taskflow-backend-gukw.onrender.com
 
 > Note: the backend is hosted on Render's free tier, which spins down after 15 minutes of inactivity. The first request after a period of inactivity may take 30-60 seconds while the server wakes up — subsequent requests will be fast.
