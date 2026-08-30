@@ -12,7 +12,7 @@ export class StatusBadge {
 
   label = computed(() => {
     switch (this.status()){
-      case 'pending': return 'Prnding';
+      case 'pending': return 'Pending';
       case 'in-progress': return 'In Progress';
       case 'completed': return 'Completed'
     }
